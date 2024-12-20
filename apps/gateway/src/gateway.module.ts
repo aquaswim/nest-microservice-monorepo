@@ -1,21 +1,35 @@
-import { Module } from '@nestjs/common';
+import { Module, RequestMethod } from '@nestjs/common';
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
-import { SharedlibModule } from '@app/sharedlib';
+import { ConfigModule, ConfigService, SharedlibModule } from '@app/sharedlib';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { microserviceProxyControllerBuilder } from './microservice-proxy-controller.builder';
 
 @Module({
   imports: [
     SharedlibModule,
-    ClientsModule.register([
+    ConfigModule.forRoot({ prefix: 'GATEWAY', global: true }),
+    ClientsModule.registerAsync([
       {
         name: 'SAMPLE_SERVICE',
-        transport: Transport.TCP,
-        options: { port: 3001 },
+        useFactory: (config: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: config.get('SAMPLE_SERVICE_HOST', 'localhost'),
+            port: config.get('SAMPLE_SERVICE_PORT', 3001),
+          },
+        }),
+        inject: [ConfigService],
       },
     ]),
   ],
-  controllers: [GatewayController],
+  controllers: [
+    GatewayController,
+    microserviceProxyControllerBuilder('SAMPLE_SERVICE')
+      .addRoute('/coba-sum', RequestMethod.POST, 'math.sum')
+      .addRoute('/echo', RequestMethod.ALL, 'echo.echo')
+      .build(),
+  ],
   providers: [GatewayService],
 })
 export class GatewayModule {}

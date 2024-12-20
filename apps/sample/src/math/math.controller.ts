@@ -1,16 +1,27 @@
 import { Controller } from '@nestjs/common';
 import { MathService } from './math.service';
 import { MessagePattern } from '@nestjs/microservices';
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+import {
+  MicroserviceRequestDto,
+  MicroserviceResponseDto,
+} from '@app/sharedlib';
 
 @Controller()
 export class MathController {
   constructor(private readonly mathService: MathService) {}
 
-  @MessagePattern({ cmd: 'sum' })
-  async sum(data: number[]): Promise<number> {
-    await sleep(2000);
-    return this.mathService.sum(data || []);
+  @MessagePattern('math.sum')
+  async sum(req: MicroserviceRequestDto) {
+    let numbers: number[] = [];
+    if (req.body?.numbers) {
+      numbers = [...req.body.numbers];
+    }
+    return new MicroserviceResponseDto(
+      {
+        input: numbers,
+        sum: this.mathService.sum(numbers),
+      },
+      200,
+    );
   }
 }
