@@ -4,8 +4,17 @@ import { GatewayService } from './gateway.service';
 import { ConfigModule, ConfigService, SharedlibModule } from '@app/sharedlib';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { microserviceProxyControllerBuilder } from './microservice-proxy-controller.builder';
+import { APP_FILTER } from '@nestjs/core';
+import { AllFilter } from './all.filter';
 
 @Module({
+  providers: [
+    GatewayService,
+    {
+      provide: APP_FILTER,
+      useClass: AllFilter,
+    },
+  ],
   imports: [
     SharedlibModule,
     ConfigModule.forRoot({ prefix: 'GATEWAY', global: true }),
@@ -30,6 +39,5 @@ import { microserviceProxyControllerBuilder } from './microservice-proxy-control
       .addRoute('/echo', RequestMethod.ALL, 'echo.echo')
       .build(),
   ],
-  providers: [GatewayService],
 })
 export class GatewayModule {}

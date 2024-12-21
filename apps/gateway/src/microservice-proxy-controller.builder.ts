@@ -34,7 +34,6 @@ export const microserviceProxyControllerBuilder = (clientNameToken: string) => {
       req: ExpressReq,
       res: ExpressResp,
     ) {
-      // todo: handle when proxy return error
       const result = await firstValueFrom<MicroserviceResponseDto>(
         this.client.send(pattern, MicroserviceRequestDto.fromExpressReq(req)),
       );
