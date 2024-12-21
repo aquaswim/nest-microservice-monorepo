@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
+  MicroserviceRequest,
   MicroserviceRequestDto,
   MicroserviceResponseDto,
 } from '@app/sharedlib';
@@ -10,7 +11,7 @@ export class EchoController {
   constructor() {}
 
   @MessagePattern('echo.echo')
-  echo(req: MicroserviceRequestDto) {
+  echo(@MicroserviceRequest() req: MicroserviceRequestDto) {
     return new MicroserviceResponseDto(req, 200);
   }
 }
