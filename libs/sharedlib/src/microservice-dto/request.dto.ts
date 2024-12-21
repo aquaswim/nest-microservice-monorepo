@@ -36,7 +36,7 @@ export class MicroserviceRequestDto<TBody = unknown>
     // validate
     const validateRes = await validate(body as object);
     if (validateRes.length > 0) {
-      // todo throw something that can be translated by gateway
+      // todo throw something that can be translated by gateway (use filter)
       throw new RpcException(validateRes);
     }
     return body;
@@ -49,7 +49,7 @@ export const MicroserviceRequest = createParamDecorator(
     const data = rpcArgs.getData<IMicroserviceRequestDto>();
     // check for type guard
     if (!data.MicroserviceRequestDto) {
-      // todo throw something that can be translated by gateway
+      // todo throw something that can be translated by gateway (use filter)
       throw new RpcException('Invalid request');
     }
     return new MicroserviceRequestDto(
