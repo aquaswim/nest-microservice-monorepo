@@ -13,7 +13,7 @@ import { randomUUID } from 'node:crypto';
 import {
   MicroserviceRequestDto,
   MicroserviceResponseDto,
-} from '@app/sharedlib';
+} from '@app/sharedlib/microservice-dto';
 
 export const microserviceProxyControllerBuilder = (clientNameToken: string) => {
   @Controller()
