@@ -1,12 +1,12 @@
 import { Controller } from '@nestjs/common';
 import { MathService } from './math.service';
 import { MessagePattern } from '@nestjs/microservices';
+import { SumBodyDto } from './dto/sum.dto';
 import {
   MicroserviceRequest,
   MicroserviceRequestDto,
   MicroserviceResponseDto,
-} from '@app/sharedlib';
-import { SumBodyDto } from './dto/sum.dto';
+} from '@app/sharedlib/microservice-dto';
 
 @Controller()
 export class MathController {

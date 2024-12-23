@@ -4,7 +4,7 @@ import {
   MicroserviceRequest,
   MicroserviceRequestDto,
   MicroserviceResponseDto,
-} from '@app/sharedlib';
+} from '@app/sharedlib/microservice-dto';
 
 @Controller()
 export class EchoController {

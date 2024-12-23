@@ -1,11 +1,12 @@
 import { Module, RequestMethod } from '@nestjs/common';
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
-import { ConfigModule, ConfigService, SharedlibModule } from '@app/sharedlib';
+import { SharedlibModule } from '@app/sharedlib';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { microserviceProxyControllerBuilder } from './microservice-proxy-controller.builder';
 import { APP_FILTER } from '@nestjs/core';
 import { AllFilter } from './all.filter';
+import { ConfigModule, ConfigService } from '@app/sharedlib/config';
 
 @Module({
   providers: [
