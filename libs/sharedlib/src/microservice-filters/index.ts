@@ -12,3 +12,5 @@ export class AllExceptionsFilter extends BaseRpcExceptionFilter {
     return super.catch(fmtErr, host);
   }
 }
+
+export * from './app-error.filter';

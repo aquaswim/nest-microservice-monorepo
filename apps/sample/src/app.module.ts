@@ -6,7 +6,10 @@ import { MathModule } from './math/math.module';
 import { EchoModule } from './echo/echo.module';
 import { ConfigModule } from '@app/sharedlib/config';
 import { APP_FILTER } from '@nestjs/core';
-import { AllExceptionsFilter } from '@app/sharedlib/microservice-filters';
+import {
+  AllExceptionsFilter,
+  AppErrorFiltersProviders,
+} from '@app/sharedlib/microservice-filters';
 
 @Module({
   imports: [
@@ -22,6 +25,7 @@ import { AllExceptionsFilter } from '@app/sharedlib/microservice-filters';
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
+    ...AppErrorFiltersProviders,
   ],
 })
 export class AppModule {}

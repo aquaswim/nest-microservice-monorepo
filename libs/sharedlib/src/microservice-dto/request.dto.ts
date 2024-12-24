@@ -1,8 +1,8 @@
 import type { Request as ExpressReq } from 'express';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { InternalError, ValidationError } from '@app/sharedlib/errors';
 
 export interface IMicroserviceRequestDto<TBody = unknown> {
   url: string;
@@ -36,8 +36,8 @@ export class MicroserviceRequestDto<TBody = unknown>
     // validate
     const validateRes = await validate(body as object);
     if (validateRes.length > 0) {
-      // todo throw something that can be translated by gateway (use filter)
-      throw new RpcException(validateRes);
+      // something that can be translated by gateway (use filter)
+      throw ValidationError.fromClassValidatorErrors(validateRes);
     }
     return body;
   }
@@ -49,8 +49,7 @@ export const MicroserviceRequest = createParamDecorator(
     const data = rpcArgs.getData<IMicroserviceRequestDto>();
     // check for type guard
     if (!data.MicroserviceRequestDto) {
-      // todo throw something that can be translated by gateway (use filter)
-      throw new RpcException('Invalid request');
+      throw new InternalError('Invalid input dto');
     }
     return new MicroserviceRequestDto(
       data.url,
