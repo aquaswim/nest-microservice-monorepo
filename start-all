@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+// script to start all the service for development purposes
+
+const concurrently = require('concurrently');
+const config = require('./nest-cli.json');
+
+const runCommands = 'pnpm run start:dev';
+
+const cmds = [];
+for (const projectName in config.projects) {
+  if (
+    config.projects.hasOwnProperty(projectName) &&
+    config.projects[projectName].type === 'application'
+  ) {
+    cmds.push({
+      name: projectName,
+      command: [runCommands, projectName].join(' '),
+      prefixColor: 'green',
+    });
+  }
+}
+
+concurrently(cmds).result.catch(console.error);
