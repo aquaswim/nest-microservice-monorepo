@@ -15,7 +15,7 @@ for (const projectName in config.projects) {
     cmds.push({
       name: projectName,
       command: [runCommands, projectName].join(' '),
-      prefixColor: 'green',
+      prefixColor: 'blue',
     });
   }
 }
