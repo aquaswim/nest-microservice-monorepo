@@ -37,15 +37,6 @@
         "tsConfigPath": "libs/sharedlib/tsconfig.lib.json"
       }
     },
-    "user": {
-      "type": "application",
-      "root": "apps/user",
-      "entryFile": "main",
-      "sourceRoot": "apps/user/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/user/tsconfig.app.json"
-      }
-    },
     "db": {
       "type": "library",
       "root": "libs/db",
