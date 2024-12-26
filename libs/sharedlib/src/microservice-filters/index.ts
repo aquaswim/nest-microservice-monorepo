@@ -14,3 +14,4 @@ export class AllExceptionsFilter extends BaseRpcExceptionFilter {
 }
 
 export * from './app-error.filter';
+export * from './typeorm.filter';

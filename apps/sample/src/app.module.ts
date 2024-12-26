@@ -8,8 +8,8 @@ import { ConfigModule } from '@app/sharedlib/config';
 import { APP_FILTER } from '@nestjs/core';
 import {
   AllExceptionsFilter,
-  AppErrorFiltersProviders,
-} from '@app/sharedlib/microservice-filters';
+  AppErrorFiltersProviders, TypeormErrorFiltersProviders
+} from "@app/sharedlib/microservice-filters";
 import { DbModule } from '@app/db';
 import { TasksModule } from './tasks/tasks.module';
 
@@ -30,6 +30,7 @@ import { TasksModule } from './tasks/tasks.module';
       useClass: AllExceptionsFilter,
     },
     ...AppErrorFiltersProviders,
+    ...TypeormErrorFiltersProviders,
   ],
 })
 export class AppModule {}
