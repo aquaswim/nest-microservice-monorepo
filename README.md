@@ -12,11 +12,12 @@ $ pnpm install
 
 ## Module List
 
-| Path           | Type | Description                              |
-|----------------|------|------------------------------------------|
-| apps/Gateway   | App  | API Gateway                              |
-| apps/Sample    | App  | Sample Service                           |
-| libs/sharedlib | Libs | Common helper                            |
+| Path           | Type | Description    |
+|----------------|------|----------------|
+| apps/Gateway   | App  | API Gateway    |
+| apps/Sample    | App  | Sample Service |
+| libs/sharedlib | Libs | Common helper  |
+| libs/db        | Libs | Typeorm module |
 
 ## Compile and run the project
 
@@ -36,11 +37,23 @@ TBA
 TBA
 ```
 
+## Database migrations
+
+We use dbmate to run and manage database migration, all the migration script
+will reside in `./migrations/{service name}/*.sql`.
+
+Example command to run dbmate on **sample service** reusing the .env file for running the service
+
+```shell
+$ dbmate --env-file ".env" -e SAMPLE_DB_CONN -d ./migrations/sample status
+```
+
 ## Resources
 
 Check out a few resources that may come in handy when working with NestJS:
 
 - [NestJS Documentation](https://docs.nestjs.com)
+- [dbmate](https://github.com/amacneil/dbmate)
 
 ## Developers
 

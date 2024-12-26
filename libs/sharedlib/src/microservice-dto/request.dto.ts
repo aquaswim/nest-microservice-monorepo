@@ -41,6 +41,14 @@ export class MicroserviceRequestDto<TBody = unknown>
     }
     return body;
   }
+
+  getParam(key: string) {
+    return this.params[key];
+  }
+
+  getParamInt(key: string) {
+    return parseInt(this.getParam(key), 10);
+  }
 }
 
 export const MicroserviceRequest = createParamDecorator(

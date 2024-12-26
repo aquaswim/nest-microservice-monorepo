@@ -10,13 +10,17 @@ import {
   AllExceptionsFilter,
   AppErrorFiltersProviders,
 } from '@app/sharedlib/microservice-filters';
+import { DbModule } from '@app/db';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
     SharedlibModule,
+    ConfigModule.forRoot({ prefix: 'SAMPLE', global: true }),
+    DbModule.forRoot(),
     MathModule,
-    ConfigModule.forRoot({ prefix: 'SAMPLE' }),
     EchoModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [
