@@ -1,17 +1,18 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   MicroserviceRequest,
   MicroserviceRequestDto,
-  MicroserviceResponseDto,
+  MicroserviceResponseFormatInterceptor,
 } from '@app/sharedlib/microservice-dto';
 
 @Controller()
+@UseInterceptors(MicroserviceResponseFormatInterceptor)
 export class EchoController {
   constructor() {}
 
   @MessagePattern('echo.echo')
   echo(@MicroserviceRequest() req: MicroserviceRequestDto) {
-    return new MicroserviceResponseDto(req, 200);
+    return req;
   }
 }

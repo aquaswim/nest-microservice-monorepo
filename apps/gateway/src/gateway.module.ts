@@ -38,11 +38,7 @@ import { ConfigModule, ConfigService } from '@app/sharedlib/config';
     microserviceProxyControllerBuilder('SAMPLE_SERVICE')
       .addRoute('/coba-sum', RequestMethod.POST, 'math.sum')
       .addRoute('/echo', RequestMethod.ALL, 'echo.echo')
-      .addRoute('/tasks', RequestMethod.GET, 'tasks.findAll')
-      .addRoute('/tasks/:id', RequestMethod.GET, 'tasks.findOne')
-      .addRoute('/tasks', RequestMethod.POST, 'tasks.create')
-      .addRoute('/tasks/:id', RequestMethod.PUT, 'tasks.update')
-      .addRoute('/tasks/:id', RequestMethod.DELETE, 'tasks.remove')
+      .addResource('/tasks', 'tasks')
       .build(),
   ],
 })

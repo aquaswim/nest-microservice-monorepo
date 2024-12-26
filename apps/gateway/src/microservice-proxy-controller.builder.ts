@@ -54,6 +54,27 @@ export const microserviceProxyControllerBuilder = (clientNameToken: string) => {
       decorateController(MicroserviceProxyController, path, method, pattern);
       return builder;
     },
+    addResource: (pathPrefix: string, patternPrefix: unknown) => {
+      builder
+        .addRoute(pathPrefix, RequestMethod.GET, `${patternPrefix}.findAll`)
+        .addRoute(pathPrefix, RequestMethod.POST, `${patternPrefix}.create`)
+        .addRoute(
+          `${pathPrefix}/:id`,
+          RequestMethod.GET,
+          `${patternPrefix}.findOne`,
+        )
+        .addRoute(
+          `${pathPrefix}/:id`,
+          RequestMethod.PUT,
+          `${patternPrefix}.update`,
+        )
+        .addRoute(
+          `${pathPrefix}/:id`,
+          RequestMethod.DELETE,
+          `${patternPrefix}.remove`,
+        );
+      return builder;
+    },
     build: () => MicroserviceProxyController,
   };
 
