@@ -1,5 +1,6 @@
 import { ArgumentsHost, Catch, Provider } from '@nestjs/common';
 import {
+  BaseError,
   ForbiddenError,
   InternalError,
   ValidationError,
@@ -9,33 +10,49 @@ import { Observable } from 'rxjs';
 import { MicroserviceResponseDto } from '@app/sharedlib/microservice-dto';
 import { APP_FILTER } from '@nestjs/core';
 
-@Catch(InternalError)
-class AppInternalErrorFilters extends BaseRpcExceptionFilter {
-  catch(exception: InternalError, host: ArgumentsHost): Observable<any> {
+abstract class BaseAppErrorFilter<
+  T extends BaseError,
+> extends BaseRpcExceptionFilter {
+  abstract get httpCode(): number;
+
+  getBody(exception: T): unknown {
+    return exception;
+  }
+
+  catch(exception: T, host: ArgumentsHost): Observable<any> {
     const fmtErr = new RpcException(
-      new MicroserviceResponseDto({ exception }, 500, exception.message),
+      new MicroserviceResponseDto(
+        this.getBody(exception),
+        this.httpCode,
+        exception.message,
+      ),
     );
     return super.catch(fmtErr, host);
+  }
+}
+
+@Catch(InternalError)
+class AppInternalErrorFilters extends BaseAppErrorFilter<InternalError> {
+  get httpCode(): number {
+    return 500;
+  }
+
+  getBody(exception: InternalError): unknown {
+    return { exception };
   }
 }
 
 @Catch(ValidationError)
-class AppValidationErrorFilters extends BaseRpcExceptionFilter {
-  catch(exception: ValidationError, host: ArgumentsHost): Observable<any> {
-    const fmtErr = new RpcException(
-      new MicroserviceResponseDto(exception, 400, exception.message),
-    );
-    return super.catch(fmtErr, host);
+class AppValidationErrorFilters extends BaseAppErrorFilter<ValidationError> {
+  get httpCode(): number {
+    return 400;
   }
 }
 
 @Catch(ForbiddenError)
-class AppForbiddenErrorFilters extends BaseRpcExceptionFilter {
-  catch(exception: ValidationError, host: ArgumentsHost): Observable<any> {
-    const fmtErr = new RpcException(
-      new MicroserviceResponseDto(exception, 403, exception.message),
-    );
-    return super.catch(fmtErr, host);
+class AppForbiddenErrorFilters extends BaseAppErrorFilter<ForbiddenError> {
+  get httpCode(): number {
+    return 403;
   }
 }
 
