@@ -7,6 +7,8 @@ import { microserviceProxyControllerBuilder } from './microservice-proxy-control
 import { APP_FILTER } from '@nestjs/core';
 import { AllFilter } from './all.filter';
 import { ConfigModule, ConfigService } from '@app/sharedlib/config';
+import { SampleAuthGuard } from './sample-auth.guard';
+import { ForbiddenFilter } from './forbidden.filter';
 
 @Module({
   providers: [
@@ -14,6 +16,10 @@ import { ConfigModule, ConfigService } from '@app/sharedlib/config';
     {
       provide: APP_FILTER,
       useClass: AllFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ForbiddenFilter,
     },
   ],
   imports: [
@@ -37,8 +43,10 @@ import { ConfigModule, ConfigService } from '@app/sharedlib/config';
     GatewayController,
     microserviceProxyControllerBuilder('SAMPLE_SERVICE')
       .addRoute('/coba-sum', RequestMethod.POST, 'math.sum')
-      .addRoute('/echo', RequestMethod.ALL, 'echo.echo')
-      .addResource('/tasks', 'tasks')
+      .addRoute('/echo', RequestMethod.ALL, 'echo.echo', {
+        guards: SampleAuthGuard,
+      })
+      .addResource('/tasks', 'tasks', { guards: SampleAuthGuard })
       .build(),
   ],
 })

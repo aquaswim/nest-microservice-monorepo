@@ -5,6 +5,7 @@ import {
   RequestMapping,
   RequestMethod,
   Response,
+  UseGuards,
 } from '@nestjs/common';
 import type { Request as ExpressReq, Response as ExpressResp } from 'express';
 import { ClientProxy } from '@nestjs/microservices';
@@ -14,6 +15,10 @@ import {
   MicroserviceRequestDto,
   MicroserviceResponseDto,
 } from '@app/sharedlib/microservice-dto';
+
+type IRouteOptions = Partial<{
+  guards: any; // todo: typeOf CanActivate
+}>;
 
 export const microserviceProxyControllerBuilder = (clientNameToken: string) => {
   @Controller()
@@ -28,6 +33,7 @@ export const microserviceProxyControllerBuilder = (clientNameToken: string) => {
     path: string,
     method: RequestMethod,
     pattern: unknown,
+    options: IRouteOptions = {},
   ) => {
     const fnName = 'fn_' + randomUUID().toString().replace(/-/g, '_');
     controller.prototype[fnName] = async function (
@@ -35,7 +41,7 @@ export const microserviceProxyControllerBuilder = (clientNameToken: string) => {
       res: ExpressResp,
     ) {
       const result = await firstValueFrom<MicroserviceResponseDto>(
-        this.client.send(pattern, MicroserviceRequestDto.fromExpressReq(req)),
+        this.client.send(pattern, MicroserviceRequestDto.fromExpress(req, res)),
       );
       return MicroserviceResponseDto.outToExpress(res, result);
     };
@@ -47,31 +53,74 @@ export const microserviceProxyControllerBuilder = (clientNameToken: string) => {
     );
     Request()(controller.prototype, fnName, 0);
     Response()(controller.prototype, fnName, 1);
+
+    // register guards
+    if (options.guards) {
+      UseGuards(options.guards)(
+        controller.prototype,
+        fnName,
+        Object.getOwnPropertyDescriptor(controller.prototype, fnName) as any,
+      );
+    }
   };
 
   const builder = {
-    addRoute: (path: string, method: RequestMethod, pattern: unknown) => {
-      decorateController(MicroserviceProxyController, path, method, pattern);
+    addRoute: (
+      path: string,
+      method: RequestMethod,
+      pattern: unknown,
+      options: IRouteOptions = {},
+    ) => {
+      decorateController(
+        MicroserviceProxyController,
+        path,
+        method,
+        pattern,
+        options,
+      );
       return builder;
     },
-    addResource: (pathPrefix: string, patternPrefix: unknown) => {
+    addResource: (
+      pathPrefix: string,
+      patternPrefix: unknown,
+      options: IRouteOptions = {},
+    ) => {
       builder
-        .addRoute(pathPrefix, RequestMethod.GET, `${patternPrefix}.findAll`)
-        .addRoute(pathPrefix, RequestMethod.POST, `${patternPrefix}.create`)
+        .addRoute(
+          pathPrefix,
+          RequestMethod.GET,
+          `${patternPrefix}.findAll`,
+          options,
+        )
+        .addRoute(
+          pathPrefix,
+          RequestMethod.GET,
+          `${patternPrefix}.findMany`,
+          options,
+        )
+        .addRoute(
+          pathPrefix,
+          RequestMethod.POST,
+          `${patternPrefix}.create`,
+          options,
+        )
         .addRoute(
           `${pathPrefix}/:id`,
           RequestMethod.GET,
           `${patternPrefix}.findOne`,
+          options,
         )
         .addRoute(
           `${pathPrefix}/:id`,
           RequestMethod.PUT,
           `${patternPrefix}.update`,
+          options,
         )
         .addRoute(
           `${pathPrefix}/:id`,
           RequestMethod.DELETE,
           `${patternPrefix}.remove`,
+          options,
         );
       return builder;
     },

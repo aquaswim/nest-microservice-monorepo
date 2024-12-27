@@ -1,4 +1,4 @@
-import type { Request as ExpressReq } from 'express';
+import type { Request as ExpressReq, Response as ExpressRes } from 'express';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
@@ -9,6 +9,7 @@ export interface IMicroserviceRequestDto<TBody = unknown> {
   params: Record<string, string>;
   body: TBody;
   query: unknown;
+  session: unknown;
 
   // this is typeguard
   readonly MicroserviceRequestDto: boolean;
@@ -24,10 +25,17 @@ export class MicroserviceRequestDto<TBody = unknown>
     public params: Record<string, string>,
     public body: TBody,
     public query: unknown,
+    public session: unknown,
   ) {}
 
-  static fromExpressReq(req: ExpressReq): MicroserviceRequestDto {
-    return new MicroserviceRequestDto(req.url, req.params, req.body, req.query);
+  static fromExpress(req: ExpressReq, res: ExpressRes): MicroserviceRequestDto {
+    return new MicroserviceRequestDto(
+      req.url,
+      req.params,
+      req.body,
+      req.query,
+      res.locals.session,
+    );
   }
 
   async getAndValidateBody<T = TBody>(type: { new (): T }) {
@@ -59,11 +67,6 @@ export const MicroserviceRequest = createParamDecorator(
     if (!data.MicroserviceRequestDto) {
       throw new InternalError('Invalid input dto');
     }
-    return new MicroserviceRequestDto(
-      data.url,
-      data.params,
-      data.body,
-      data.query,
-    );
+    return plainToInstance(MicroserviceRequestDto, data);
   },
 );
