@@ -24,17 +24,13 @@ export class SampleAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest<ExpressRequest>();
     const res = context.switchToHttp().getResponse<ExpressResponse>();
     if (!req.header('x-api-key')) {
+      this.logger.log('missing x-api-key');
       return false;
     }
 
-    try {
-      res.locals.session = await firstValueFrom(
-        this.sampleClient.send('auth.verify', req.header('x-api-key')),
-      );
-    } catch (err) {
-      this.logger.error('error at auth.verify', err);
-      return false;
-    }
+    res.locals.session = await firstValueFrom(
+      this.sampleClient.send('auth.verify', req.header('x-api-key')),
+    );
     return true;
   }
 }

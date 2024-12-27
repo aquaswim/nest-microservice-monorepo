@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { MessagePattern } from '@nestjs/microservices';
+import { ForbiddenError } from '@app/sharedlib/errors';
 
 @Controller()
 export class AuthController {
@@ -8,7 +9,11 @@ export class AuthController {
 
   @MessagePattern('auth.verify')
   async verifyAuth(apiKey: string) {
-    const data = await this.authService.findKey(apiKey);
-    return { id: data.name };
+    try {
+      const data = await this.authService.findKey(apiKey);
+      return { id: data.name };
+    } catch (err) {
+      throw new ForbiddenError(String(err));
+    }
   }
 }

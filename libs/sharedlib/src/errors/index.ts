@@ -26,3 +26,9 @@ export class InternalError extends BaseError {
     super(message);
   }
 }
+
+export class ForbiddenError extends BaseError {
+  constructor(message = 'Forbidden') {
+    super(message);
+  }
+}
