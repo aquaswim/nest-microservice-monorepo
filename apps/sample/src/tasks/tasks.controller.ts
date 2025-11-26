@@ -33,7 +33,7 @@ export class TasksController {
   @MessagePattern('tasks.update')
   async update(@MicroserviceRequest() req: MicroserviceRequestDto) {
     const updateTaskDto = await req.getAndValidateBody(UpdateTaskDto);
-    return this.tasksService.update(updateTaskDto.id, updateTaskDto);
+    return this.tasksService.update(req.getParamInt('id'), updateTaskDto);
   }
 
   @MessagePattern('tasks.remove')

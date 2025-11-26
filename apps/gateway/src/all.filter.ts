@@ -1,10 +1,4 @@
-import {
-  ArgumentsHost,
-  BadGatewayException,
-  Catch,
-  HttpException,
-  Logger,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, HttpException, Logger } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import {
   IMicroserviceResponseDto,
@@ -17,22 +11,35 @@ export class AllFilter extends BaseExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost) {
     // const httpArgs = host.switchToHttp();
-    this.log.error(`[CatchAll] error: ${JSON.stringify(exception)}`);
+    this.log.debug('exception', exception);
+
+    let formattedException: IMicroserviceResponseDto;
+
     if ((exception as IMicroserviceResponseDto).MicroserviceResponseDto) {
-      const resDto = exception as IMicroserviceResponseDto;
-      // handle MicroserviceResponseDTO
-      return super.catch(
-        new HttpException(
-          MicroserviceResponseDto.formatBody(resDto),
-          resDto.code,
-        ),
-        host,
+      this.log.error('MicroserviceResponseDto', exception);
+      formattedException = exception as IMicroserviceResponseDto;
+    } else if (exception instanceof HttpException) {
+      this.log.error('HttpException', exception);
+      formattedException = new MicroserviceResponseDto(
+        { cause: exception.cause },
+        exception.getStatus(),
+        exception.message,
+      );
+    } else {
+      this.log.error('UnknownError', exception);
+      formattedException = new MicroserviceResponseDto(
+        undefined,
+        502,
+        'Bad Gateway',
       );
     }
-    const fmtErr = new BadGatewayException(
-      { message: 'unexpected error when calling upstream service' },
-      { cause: exception },
+
+    return super.catch(
+      new HttpException(
+        MicroserviceResponseDto.formatBody(formattedException),
+        formattedException.code,
+      ),
+      host,
     );
-    return super.catch(fmtErr, host);
   }
 }
