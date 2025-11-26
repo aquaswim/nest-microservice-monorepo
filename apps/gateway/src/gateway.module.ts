@@ -1,6 +1,4 @@
 import { Module, RequestMethod } from '@nestjs/common';
-import { GatewayController } from './gateway.controller';
-import { GatewayService } from './gateway.service';
 import { SharedlibModule } from '@app/sharedlib';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { microserviceProxyControllerBuilder } from './microservice-proxy-controller.builder';
@@ -9,10 +7,10 @@ import { AllFilter } from './all.filter';
 import { ConfigModule, ConfigService } from '@app/sharedlib/config';
 import { SampleAuthGuard } from './sample-auth.guard';
 import { ForbiddenFilter } from './forbidden.filter';
+import { HealthCheckController } from './health-check/health-check.controller';
 
 @Module({
   providers: [
-    GatewayService,
     {
       provide: APP_FILTER,
       useClass: AllFilter,
@@ -40,7 +38,7 @@ import { ForbiddenFilter } from './forbidden.filter';
     ]),
   ],
   controllers: [
-    GatewayController,
+    HealthCheckController,
     microserviceProxyControllerBuilder('SAMPLE_SERVICE')
       .addRoute('/coba-sum', RequestMethod.POST, 'math.sum')
       .addRoute('/echo', RequestMethod.ALL, 'echo.echo', {
