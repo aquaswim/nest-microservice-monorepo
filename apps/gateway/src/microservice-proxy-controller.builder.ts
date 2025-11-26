@@ -16,6 +16,8 @@ import {
   MicroserviceResponseDto,
 } from '@app/sharedlib/microservice-dto';
 
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
 type IRouteOptions = Partial<{
   guards: any; // todo: typeOf CanActivate
 }>;
