@@ -28,6 +28,7 @@ export class SampleAuthGuard implements CanActivate {
       return false;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     res.locals.session = await firstValueFrom(
       this.sampleClient.send('auth.verify', req.header('x-api-key')),
     );

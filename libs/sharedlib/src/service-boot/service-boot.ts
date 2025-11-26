@@ -13,6 +13,7 @@ const getPort = (appName: string) => {
 export const TCPServiceBoot = (name: string, AppModule: any) => {
   (async () => {
     const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       AppModule,
       { transport: Transport.TCP, options: { port: getPort(name) } },
     );

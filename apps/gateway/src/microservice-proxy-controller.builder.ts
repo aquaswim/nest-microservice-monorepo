@@ -29,18 +29,20 @@ export const microserviceProxyControllerBuilder = (clientNameToken: string) => {
   }
 
   const decorateController = (
-    controller: any,
+    controller: typeof MicroserviceProxyController | { [fn_name: string]: any },
     path: string,
     method: RequestMethod,
     pattern: unknown,
     options: IRouteOptions = {},
   ) => {
     const fnName = 'fn_' + randomUUID().toString().replace(/-/g, '_');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     controller.prototype[fnName] = async function (
       req: ExpressReq,
       res: ExpressResp,
     ) {
       const result = await firstValueFrom<MicroserviceResponseDto>(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
         this.client.send(pattern, MicroserviceRequestDto.fromExpress(req, res)),
       );
       return MicroserviceResponseDto.outToExpress(res, result);
@@ -82,7 +84,7 @@ export const microserviceProxyControllerBuilder = (clientNameToken: string) => {
     },
     addResource: (
       pathPrefix: string,
-      patternPrefix: unknown,
+      patternPrefix: string,
       options: IRouteOptions = {},
     ) => {
       builder

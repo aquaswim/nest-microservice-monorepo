@@ -7,4 +7,4 @@ async function bootstrap() {
   console.log(`Gateway is listening at address: ${await app.getUrl()}`);
 }
 
-bootstrap();
+bootstrap().catch(console.error);

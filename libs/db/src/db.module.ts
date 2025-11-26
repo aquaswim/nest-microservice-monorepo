@@ -14,9 +14,14 @@ export class DbModule {
           useFactory: (cfg: ConfigService) => {
             const param = new ConnectionString(cfg.get<string>('DB_CONN', ''));
 
+            const dbType = parseDBType(param.protocol);
+            if (!dbType) {
+              throw new Error(`Unknown DB TYPE=${dbType}`);
+            }
+
             return {
               ...param.params,
-              type: param.protocol as any,
+              type: dbType,
               host: param.hostname,
               port: param.port,
               username: param.user,
@@ -30,5 +35,19 @@ export class DbModule {
       providers: [],
       exports: [TypeOrmModule],
     };
+  }
+}
+
+function parseDBType(type: string | undefined) {
+  if (!type) return undefined;
+  switch (type.toLowerCase()) {
+    case 'mysql':
+      return 'mysql';
+    case 'postgres':
+      return 'postgres';
+    case 'sqlite':
+      return 'sqlite';
+    default:
+      return undefined;
   }
 }

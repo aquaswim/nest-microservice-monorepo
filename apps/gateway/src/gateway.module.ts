@@ -31,8 +31,8 @@ import { ForbiddenFilter } from './forbidden.filter';
         useFactory: (config: ConfigService) => ({
           transport: Transport.TCP,
           options: {
-            host: config.get('SAMPLE_SERVICE_HOST', 'localhost'),
-            port: config.get('SAMPLE_SERVICE_PORT', 3001),
+            host: config.get<string>('SAMPLE_SERVICE_HOST', 'localhost'),
+            port: config.get<number>('SAMPLE_SERVICE_PORT', 3001),
           },
         }),
         inject: [ConfigService],
