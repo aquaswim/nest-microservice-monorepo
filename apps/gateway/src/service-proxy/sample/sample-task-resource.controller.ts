@@ -6,7 +6,7 @@ import { ExpressReq, ExpressResp } from '@app/sharedlib/microservice-dto';
 
 @Controller('tasks')
 export class SampleTaskResourceController extends BaseProxyController {
-  constructor(private readonly config: ConfigService) {
+  constructor(config: ConfigService) {
     super(
       ClientProxyFactory.create({
         transport: Transport.TCP,
