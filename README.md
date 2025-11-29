@@ -6,9 +6,8 @@ Monorepo Microservice Boilerplate built with nestjs 🐈
 
 ## Project setup
 
-```bash
-$ pnpm install
-```
+1. make sure you have `pnpm` installed
+2. run `pnpm install`
 
 ## Module List
 
@@ -21,9 +20,9 @@ $ pnpm install
 
 ## Compile and run the project
 
-```bash
-TBA
-```
+1. start the backing service for local development `docker compose -f ./backing-service/docker-compose.yml up -d`
+2. sets up the environment variables in `.env` file from `.env.example`
+3. run `pnpm run start:dev`
 
 ## Run tests
 

@@ -1,0 +1,11 @@
+.idea
+backing-service
+dist
+migrations
+node_modules
+.env
+.env.example
+.gitignore
+Dockerfile
+README.md
+start-all
