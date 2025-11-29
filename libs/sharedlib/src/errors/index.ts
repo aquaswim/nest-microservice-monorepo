@@ -32,3 +32,10 @@ export class ForbiddenError extends BaseError {
     super(message);
   }
 }
+
+export class UserAlreadyExistError extends ValidationError {
+  constructor() {
+    super();
+    this.message = 'User already exist';
+  }
+}

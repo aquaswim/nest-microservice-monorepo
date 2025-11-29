@@ -1,0 +1,29 @@
+meta {
+  name: login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{gateway_url}}/users/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "Jonathon_Gleichner8@hotmail.com",
+    "password": "passw0rd!!"
+  }
+}
+
+script:post-response {
+  if (res.getStatus() === 200) {
+    bru.setVar('___login_accessToken', res.body.data.accessToken)
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

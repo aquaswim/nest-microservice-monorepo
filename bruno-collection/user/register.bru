@@ -1,0 +1,25 @@
+meta {
+  name: register
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{gateway_url}}/users/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "{{$randomEmail}}",
+    "password": "passw0rd!!",
+    "firstName": "{{$randomFirstName}}",
+    "lastName": "{{$randomLastName}}"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

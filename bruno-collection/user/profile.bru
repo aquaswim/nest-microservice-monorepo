@@ -1,0 +1,20 @@
+meta {
+  name: profile
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{gateway_url}}/users/me
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{___login_accessToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
