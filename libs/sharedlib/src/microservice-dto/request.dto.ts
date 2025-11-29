@@ -1,8 +1,8 @@
-import type { Request as ExpressReq, Response as ExpressRes } from 'express';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { InternalError, ValidationError } from '@app/sharedlib/errors';
+import { ExpressReq } from '@app/sharedlib/microservice-dto/express';
 
 export interface IMicroserviceRequestDto<TBody = unknown> {
   url: string;
@@ -28,13 +28,13 @@ export class MicroserviceRequestDto<TBody = unknown>
     public session: unknown,
   ) {}
 
-  static fromExpress(req: ExpressReq, res: ExpressRes): MicroserviceRequestDto {
+  static fromExpress(req: ExpressReq): MicroserviceRequestDto {
     return new MicroserviceRequestDto(
       req.url,
       req.params,
       req.body,
       req.query,
-      res.locals.session,
+      req.session,
     );
   }
 

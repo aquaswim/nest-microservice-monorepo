@@ -1,4 +1,4 @@
-import type { Response as ExpressResp } from 'express';
+import { ExpressResp } from '@app/sharedlib/microservice-dto/express';
 
 export interface IMicroserviceResponseDto {
   readonly MicroserviceResponseDto: boolean;

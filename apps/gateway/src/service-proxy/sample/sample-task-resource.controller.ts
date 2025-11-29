@@ -1,10 +1,21 @@
-import { Controller, Delete, Get, Patch, Post, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { BaseProxyController } from '../../base-proxy.controller';
 import { ConfigService } from '@app/sharedlib/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { ExpressReq, ExpressResp } from '@app/sharedlib/microservice-dto';
+import { SampleAuthGuard } from '../../sample-auth.guard';
 
 @Controller('tasks')
+@UseGuards(SampleAuthGuard)
 export class SampleTaskResourceController extends BaseProxyController {
   constructor(config: ConfigService) {
     super(

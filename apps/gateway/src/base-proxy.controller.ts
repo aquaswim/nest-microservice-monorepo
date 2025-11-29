@@ -18,7 +18,7 @@ export abstract class BaseProxyController {
     res: ExpressResp,
   ) {
     const result = await firstValueFrom<MicroserviceResponseDto>(
-      this.client.send(pattern, MicroserviceRequestDto.fromExpress(req, res)),
+      this.client.send(pattern, MicroserviceRequestDto.fromExpress(req)),
     );
     return MicroserviceResponseDto.outToExpress(res, result);
   }
